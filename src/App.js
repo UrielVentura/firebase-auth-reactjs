@@ -12,7 +12,7 @@ import Menu from './components/Menu';
 
 function App() {
   return (
-    <div className='container'>
+    <div className=''>
       <Router>
         <Menu></Menu>
         <Switch>

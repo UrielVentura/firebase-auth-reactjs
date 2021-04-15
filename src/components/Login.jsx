@@ -1,15 +1,20 @@
 import React ,{useState} from 'react'
 import {auth} from '../firebaseconfig'
+import {useHistory} from 'react-router-dom'
 const Login = () => {
+    
     const [email, setemail] = useState('')
     const [pass, setPass] = useState('')
     const [msgerror, setMsgerror] = useState(null)
+    const history = useHistory()
 
     const UserRegister = (e) => {
         e.preventDefault()
 
         auth.createUserWithEmailAndPassword(email, pass)
-            .then( r => alert('Usuario registrado'))
+            .then( r => {
+                history.push('/')
+            })
             .catch(e => {
                 if (e.code === 'auth/invalid-email') {
                     setMsgerror('Formato de Email Incorrecto')
@@ -19,7 +24,21 @@ const Login = () => {
                     setMsgerror('La contraseña debe tener 6 caracters o mas')
                 }
             })
+        setMsgerror(null)
+        
         }
+    const UserLogin = (e) => {
+        //auth/wrong-password
+        auth.signInWithEmailAndPassword(email,pass)
+        .then((r) => {
+            history.push('/')
+        })
+        .catch( (e) =>{
+            if (e.code === 'auth/wrong-password') {
+                setMsgerror('Contraseña incorrecta.')                
+            }
+        })
+    }
 
     return (
         <div className='row mt-5'>
@@ -41,6 +60,9 @@ const Login = () => {
                         value='Registrar Usuario' 
                         className='btn btn-info btn-block mt-4 '/>
                 </form>
+                <button className='btn btn-success btn-block' onClick={UserLogin}>
+                    Iniciar Sesion
+                </button>
                 {
                     msgerror != null ? 
                     (
